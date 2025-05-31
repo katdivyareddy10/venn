@@ -1,0 +1,107 @@
+.form-card {
+  background: #fff;
+  color: #111;
+  border-radius: 20px;
+  border: 1px solid #e1e2e1;
+  padding: 2.5rem 2rem 2rem 2rem;
+  max-width: 440px;
+  margin: 4rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+.form-card h2 {
+  font-size: 2rem;
+  font-weight: 500;
+  text-align: center;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: 0.01em;
+}
+
+.form-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+.form-fields > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+label {
+  font-size: 1.04rem;
+  font-weight: 450;
+  margin-bottom: 0.1rem;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="number"] {
+  font-size: 1rem;
+  padding: 0.82rem 1rem;
+  border: 1.5px solid #e2e2e2;
+  border-radius: 12px;
+  outline: none;
+  background: #fff;
+  color: #111;
+  transition: border 0.14s;
+}
+
+input:focus {
+  border-color: #bebebe;
+  background: #fafcff;
+}
+
+button[type="submit"] {
+  margin-top: 1.7rem;
+  padding: 1.1rem 0;
+  width: 100%;
+  background: #111;
+  color: #fff;
+  font-size: 1.18rem;
+  font-weight: 500;
+  border-radius: 13px;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+
+button[type="submit"]:active {
+  background: #444;
+}
+button[type="submit"]:disabled {
+  background: #222;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.field-error {
+  color: #e63946;
+  font-size: 0.99em;
+  min-height: 1.2em;
+}
+
+.field-loading {
+  color: #757575;
+  font-size: 0.97em;
+  min-height: 1em;
+  margin-top: 0.2em;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .form-card {
+    max-width: 97vw;
+    padding: 1.4rem 0.8rem 1.6rem 0.8rem;
+    margin: 1.2rem auto;
+  }
+  .form-fields {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+}

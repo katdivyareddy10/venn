@@ -60,11 +60,19 @@ export function useForm({
     setValues((v) => ({ ...v, [name]: value }));
   }
 
+  const allFieldsValid = fields.every((f) => {
+    const val = values[f.name];
+    const error = errors[f.name];
+    const load = loading[f.name];
+    return (f.required ? !!val : true) && !error && !load;
+  });
+
   return {
     values,
     errors,
     touched,
     loading,
+    allFieldsValid,
     handleChange,
     handleBlur,
     handleSubmit,

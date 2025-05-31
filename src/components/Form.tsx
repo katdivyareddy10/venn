@@ -1,9 +1,11 @@
 import { useForm } from "../hooks/useForm";
 
+export type InputType = "text" | "tel" | "email" | "number" | "select" | "date";
+
 export type FieldConfig = {
   name: string;
   label: string;
-  type: "text" | "tel" | "email" | "number" | "select" | "date";
+  type: InputType;
   placeholder?: string;
   maxLength?: number;
   required?: boolean;
@@ -15,13 +17,19 @@ export type FieldConfig = {
 };
 
 type FormProps = {
+  title?: string;
   fields: FieldConfig[];
   onSubmit: (values: Record<string, any>) => void;
   initialValues?: Record<string, any>;
 };
 
 // Generic form for reusability
-export function Form({ fields, onSubmit, initialValues = {} }: FormProps) {
+export function Form({
+  title,
+  fields,
+  onSubmit,
+  initialValues = {},
+}: FormProps) {
   const form = useForm({
     fields,
     onSubmit,
@@ -30,6 +38,7 @@ export function Form({ fields, onSubmit, initialValues = {} }: FormProps) {
 
   return (
     <form onSubmit={form.handleSubmit}>
+      <title>{title}</title>
       <div>
         {fields.map((field) => (
           <div key={field.name}>
