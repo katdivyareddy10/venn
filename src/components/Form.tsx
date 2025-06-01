@@ -41,13 +41,14 @@ export function Form({
   return (
     <div className="form-card">
       <h2>{title}</h2>
-      <form onSubmit={form.handleSubmit}>
+      <form autoComplete="off" onSubmit={form.handleSubmit}>
         <div className="form-fields">
-          {fields.map((field) => (
+          {fields.map((field, index) => (
             <div key={field.name} style={field.style}>
               <label htmlFor={field.name}>{field.label}</label>
               <input
-                id={field.name}
+                autoFocus={!index}
+                aria-autocomplete="none"
                 name={field.name}
                 type={field.type}
                 maxLength={field.maxLength}
