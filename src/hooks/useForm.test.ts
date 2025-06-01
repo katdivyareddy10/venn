@@ -12,7 +12,12 @@ describe("useForm", () => {
       required: true,
       validate: (val: string) => (!val.includes("@") ? "Invalid email" : null),
       asyncValidate: async (val: string) =>
-        val === "exists@example.com" ? "Email already exists" : null,
+        val === "exists@example.com"
+          ? {
+              message: "Email already exists",
+              valid: false,
+            }
+          : null,
     },
     {
       name: "name",

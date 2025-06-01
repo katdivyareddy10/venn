@@ -20,7 +20,7 @@ export function useForm({
   const [loading, setLoading] = useState<Record<string, boolean>>({});
 
   function handleChange(name: string, value: any) {
-    setValues((v) => ({ ...v, [name]: value }));
+    setValues((v) => ({ ...v, [name]: value.trim() })); // Remove white spaces
   }
 
   async function handleBlur(name: string) {
@@ -41,7 +41,7 @@ export function useForm({
       setLoading((l) => ({ ...l, [name]: true }));
       const err = await field.asyncValidate(value, values);
       setLoading((l) => ({ ...l, [name]: false }));
-      setErrors((e) => ({ ...e, [name]: err }));
+      setErrors((e) => ({ ...e, [name]: err?.message }));
     }
   }
 

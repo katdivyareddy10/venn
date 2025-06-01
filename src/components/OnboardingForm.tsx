@@ -1,6 +1,8 @@
-import { useForm } from "../hooks/useForm";
-import type { FieldConfig } from "./Form";
+import { Form, type FieldConfig } from "./Form";
 import "../styles/form.css";
+import { getRequest, postRequest } from "../api/request";
+import { BASE_URI } from "../utils";
+import { useState } from "react";
 
 const fields: FieldConfig[] = [
   {
@@ -24,6 +26,7 @@ const fields: FieldConfig[] = [
   {
     name: "phone",
     label: "Phone Number",
+    style: { gridColumn: "1/3" },
     type: "tel",
     required: true,
     validate: (v: string) => {
@@ -37,6 +40,7 @@ const fields: FieldConfig[] = [
     label: "Corporation Number",
     type: "text",
     required: true,
+    style: { gridColumn: "1/3" },
     validate: (v: string) =>
       !v
         ? "Corporation number is required"
@@ -45,61 +49,39 @@ const fields: FieldConfig[] = [
         : null,
     asyncValidate: async (v: string) => {
       if (!v || v.length !== 9) return null;
-      // Simulated API call (replace with real fetch)
-      await new Promise((res) => setTimeout(res, 800));
-      return "Invalid corporation number";
+      const res = await getRequest(
+        `${BASE_URI}/corporation-number/${encodeURIComponent(v)}`
+      );
+      return res.response;
     },
   },
 ];
 
 export default function OnboardingForm() {
-  const form = useForm({
-    fields,
-    onSubmit: async (values) => {
-      alert("Success!\n" + JSON.stringify(values, null, 2));
-    },
-  });
+  const [submissionMessage, setSubmissionMessage] = useState<string | null>();
+  const handleSubmit = async (values: Record<string, any>) => {
+    const result = await postRequest({
+      url: `${BASE_URI}/profile-details`,
+      body: values,
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (result.success) {
+      setSubmissionMessage(null);
+      // TODO - Show next step of the form?
+      alert("Form submission successful");
+    } else if (result.statusCode === 400) {
+      setSubmissionMessage(result.response?.message);
+    }
+  };
 
   return (
-    <div className="form-card">
-      <h2>Onboarding Form</h2>
-      <form onSubmit={form.handleSubmit}>
-        <div className="form-fields">
-          {fields.map((field) => (
-            <div
-              key={field.name}
-              style={
-                ["phone", "corporationNumber"].includes(field.name)
-                  ? { gridColumn: "1/3" }
-                  : {}
-              }
-            >
-              <label htmlFor={field.name}>{field.label}</label>
-              <input
-                id={field.name}
-                name={field.name}
-                type={field.type}
-                maxLength={field.maxLength}
-                required={field.required}
-                value={form.values[field.name]}
-                onChange={(e) => form.handleChange(field.name, e.target.value)}
-                onBlur={() => form.handleBlur(field.name)}
-                autoComplete="off"
-              />
-              {form.loading[field.name] && (
-                <div className="field-loading">Checking…</div>
-              )}
-              {form.touched[field.name] && form.errors[field.name] && (
-                <div className="field-error">{form.errors[field.name]}</div>
-              )}
-            </div>
-          ))}
-        </div>
-        <button type="submit" disabled={!form.allFieldsValid}>
-          Submit →
-        </button>
-        {/* TODO - Handle submit errors */}
-      </form>
-    </div>
+    <>
+      <p className="step-text">Step 1 of 5</p>
+      <Form fields={fields} title="Onboarding Form" onSubmit={handleSubmit} />
+      {submissionMessage && (
+        <div className="form-error">{submissionMessage}</div>
+      )}
+    </>
   );
 }

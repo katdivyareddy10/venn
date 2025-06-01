@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { useForm } from "../hooks/useForm";
 
 export type InputType = "text" | "tel" | "email" | "number" | "select" | "date";
@@ -9,11 +10,12 @@ export type FieldConfig = {
   placeholder?: string;
   maxLength?: number;
   required?: boolean;
+  style?: CSSProperties;
   validate?: (value: any, values: Record<string, any>) => string | null;
   asyncValidate?: (
     value: any,
     values: Record<string, any>
-  ) => Promise<string | null>;
+  ) => Promise<Record<string, any> | null>;
 };
 
 type FormProps = {
@@ -37,31 +39,38 @@ export function Form({
   });
 
   return (
-    <form onSubmit={form.handleSubmit}>
-      <title>{title}</title>
-      <div>
-        {fields.map((field) => (
-          <div key={field.name}>
-            <label htmlFor={field.name}>{field.label}</label>
-            <input
-              id={field.name}
-              name={field.name}
-              type={field.type}
-              maxLength={field.maxLength}
-              placeholder={field.placeholder}
-              required={field.required}
-              value={form.values[field.name]}
-              onChange={(e) => form.handleChange(field.name, e.target.value)}
-              onBlur={() => form.handleBlur(field.name)}
-              disabled={form.touched[field.name] && form.loading[field.name]}
-            />
-            {form.touched[field.name] && form.errors[field.name] && (
-              <div>{form.errors[field.name]}</div>
-            )}
-          </div>
-        ))}
-      </div>
-      <button type="submit">Submit</button>
-    </form>
+    <div className="form-card">
+      <h2>{title}</h2>
+      <form onSubmit={form.handleSubmit}>
+        <div className="form-fields">
+          {fields.map((field) => (
+            <div key={field.name} style={field.style}>
+              <label htmlFor={field.name}>{field.label}</label>
+              <input
+                id={field.name}
+                name={field.name}
+                type={field.type}
+                maxLength={field.maxLength}
+                required={field.required}
+                value={form.values[field.name]}
+                onChange={(e) => form.handleChange(field.name, e.target.value)}
+                onBlur={() => form.handleBlur(field.name)}
+                autoComplete="off"
+              />
+              {form.loading[field.name] && (
+                <div className="field-loading">Validating...</div>
+              )}
+              {form.touched[field.name] && form.errors[field.name] && (
+                <div className="field-error">{form.errors[field.name]}</div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <button type="submit" disabled={!form.allFieldsValid}>
+          Submit →
+        </button>
+      </form>
+    </div>
   );
 }
